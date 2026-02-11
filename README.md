@@ -2,6 +2,18 @@
 
 - An attempt to do all the exercises and examples esp the formal verification & practical 
 
+## Build, Flash and Make Shared Objects for Verilator using Make
+- From the specific part directory e.g `wires` to the following 
+
+Building 
+`make build`
+
+Flash 
+`make flash`
+
+Verilate 
+`make verilate`
+
 
 ## Building Simulations using CMake 
 - From the specific part directory e.g `wires` to the following 
