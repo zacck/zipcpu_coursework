@@ -1,12 +1,15 @@
 `default_nettype none
-module blinky (
+module blinky
+ (
 	i_clk, 
 	o_led
 );
+
+ parameter WIDTH = 27;
  input wire i_clk;
  output wire o_led;
 
- parameter WIDTH = 27;
+
 
  reg [WIDTH-1:0] counter; 
 
