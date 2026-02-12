@@ -10,7 +10,7 @@ flash:
 
 verilate:
 	rm -rf obj_dir
-	verilator -Wall --trace --cc blinky.v --exe blinky.cpp
+	verilator -Wall -GWIDTH=12 --cc blinky.v --exe blinky.cpp
 	cd obj_dir/ && make -f Vblinky.mk
 
 sim: 
