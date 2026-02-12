@@ -1,2 +1,19 @@
-set_io   i_sw   12 
-set_io   o_led  39
+set_io   i_sw[0]  23
+set_io   i_sw[1]  25 
+set_io   i_sw[2]  26 
+set_io   i_sw[3]  27 
+set_io   i_sw[4]  32 
+set_io   i_sw[5]  35 
+set_io   i_sw[6]  31 
+set_io   i_sw[7]  37 
+set_io   i_sw[8]  34 
+
+set_io   o_led[0]  12
+set_io   o_led[1]  21
+set_io   o_led[2]  13
+set_io   o_led[3]  19
+set_io   o_led[4]  18
+set_io   o_led[5]  11
+set_io   o_led[6]  9
+set_io   o_led[7]  6
+set_io   o_led[8]  44

@@ -9,13 +9,13 @@ int main(int argc, char **argv) {
 	Vthruwire *tb = new Vthruwire;
 
 	for(int k=0; k < 20; k++) {
-		tb-> i_sw = k & 1; 
+		tb-> i_sw = k & 0x1ff; 
 
 		tb->eval();
 
 
 		printf("k = %2d, ", k);
-		printf("sw = %d, ", tb->i_sw); 
-		printf("led =  %d\n", tb->o_led);
+		printf("sw = %3x, ", tb->i_sw); 
+		printf("led =  %3x\n", tb->o_led);
 	}
 }
