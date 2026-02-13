@@ -7,12 +7,6 @@ compile:
 flash:
 	iceprog _build/blinky.bin
 
-
-verilate:
-	rm -rf obj_dir
-	verilator -Wall -GWIDTH=12 --cc blinky.v --exe blinky.cpp --trace-vcd
-	cd obj_dir/ && make -f Vblinky.mk
-
 sim: 
 	rm -rf build && mkdir build
 	cd build && cmake .. && cmake --build .

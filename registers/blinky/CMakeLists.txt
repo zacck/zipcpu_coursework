@@ -12,7 +12,7 @@ add_library(Vtest_lib SHARED
 	/usr/local/share/verilator/include/verilated_vcd_c.cpp
 )
 
-verilate(Vtest_lib SOURCES ./blinky.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3")
+verilate(Vtest_lib SOURCES ./blinky.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3" "-GWIDTH=12")
 
 add_executable(${CMAKE_PROJECT_NAME}
 	blinky.cpp

@@ -7,12 +7,6 @@ compile:
 flash:
 	iceprog _build/thruwire.bin
 
-
-verilate:
-	rm -rf obj_dir
-	verilator -Wall --trace --cc thruwire.v --exe thruwire.cpp
-	cd obj_dir/ && make -f Vthruwire.mk
-
 sim: 
 	rm -rf build && mkdir build
 	cd build && cmake .. && cmake --build .
