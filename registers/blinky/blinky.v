@@ -4,7 +4,7 @@ module blinky (
     o_led
 );
 
-  parameter WIDTH = 27;
+  parameter integer WIDTH = 27;
   input wire i_clk;
   output wire o_led;
 
