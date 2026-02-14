@@ -12,7 +12,7 @@ add_library(Vtest_lib SHARED
 	/usr/local/share/verilator/include/verilated_vcd_c.cpp
 )
 
-verilate(Vtest_lib SOURCES ./ledwalkersm.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3" "-GCLK_RATE_HZ=12")
+verilate(Vtest_lib SOURCES ./ledwalkersm.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3" "-GCLK_RATE_HZ=100")
 
 add_executable(${CMAKE_PROJECT_NAME}
 	ledwalkersm.cpp

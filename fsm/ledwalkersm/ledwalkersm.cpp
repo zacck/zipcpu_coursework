@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
 	tfp->open("ledwalkersmtrace.vcd");
 
 	int last_led = tb->o_led; 
-	for(int k=0; k <(1<<20); k++) {
+	for(int k=0; k <(1<<10); k++) {
 		tick(++tickcount, tb, tfp);
 		if (last_led != tb->o_led) {
 			printf("k = %7d ", k);

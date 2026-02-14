@@ -10,8 +10,8 @@ module ledwalkersm (
   reg [3:0] led_index;
 
   // set defaults
-  initial {stb, counter} = 0;
-  initial o_led = 8'b000000001;
+  initial stb = 0;
+  initial o_led = 8'h01;
   initial led_index = 0;
 
   /* Implement 1hz strobe signal
@@ -19,6 +19,8 @@ module ledwalkersm (
    * Counter overruns once a second
    */
   parameter integer CLK_RATE_HZ = 12_000_000;
+  initial counter = CLK_RATE_HZ - 1;
+
   always @(posedge i_clk)
     if (counter == 0) counter <= CLK_RATE_HZ - 1;
     else counter <= counter - 1'b1;
