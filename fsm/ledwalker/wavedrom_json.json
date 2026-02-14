@@ -1,0 +1,12 @@
+{signal: [
+  {name: 'clk', wave: 'p.............'},
+  {name: 'oled[0]', wave: '10.......1'},
+  {name: 'oled[1]', wave: '010......'},
+  {name: 'oled[2]', wave: '0.10.....'},
+  {name: 'oled[3]', wave: '0..10....'},
+  {name: 'oled[4]', wave: '0...10...'},
+  {name: 'oled[5]', wave: '0....10..'},
+  {name: 'oled[6]', wave: '0.....10.'},
+  {name: 'oled[7]', wave: '0......10.'},
+]}
+
