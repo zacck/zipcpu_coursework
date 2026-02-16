@@ -1,7 +1,14 @@
+`default_nettype none
 module ledwalkersm (
     i_clk,
     o_led
 );
+  parameter integer SIM_EN = 0;
+
+  if(SIM_EN == 1) begin
+	  `define SIM_ON
+  end 
+
   output reg [7:0] o_led;
   input wire i_clk;
 
@@ -57,4 +64,13 @@ module ledwalkersm (
       4'hd: o_led <= 8'h02;
       default: o_led <= 8'h01;
     endcase
+
+    `ifdef SIM_ON
+	    always @(posedge i_clk)
+		    assert (led_index <= 4'd10);
+
+	    always @(posedge i_clk)
+		    assert (counter <= CLK_RATE_HZ-1); 
+
+    `endif
 endmodule
