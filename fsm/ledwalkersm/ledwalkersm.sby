@@ -1,0 +1,14 @@
+[options]
+mode prove
+depth 20
+
+[engines]
+smtbmc
+
+[script]
+read -formal ledwalkersm.v
+
+prep -top ledwalkersm
+
+[files]
+ledwalkersm.v

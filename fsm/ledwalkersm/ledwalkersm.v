@@ -32,6 +32,7 @@ module ledwalkersm (
     if (counter == 0) counter <= CLK_RATE_HZ - 1;
     else counter <= counter - 1'b1;
 
+
   always @(posedge i_clk) begin
     stb <= 1'b0;
     if (counter == 0) stb <= 1'b1;
@@ -42,7 +43,7 @@ module ledwalkersm (
    */
   always @(posedge i_clk)
     if (stb) begin
-      if (led_index >= 4'd13) led_index <= 0;
+      if (led_index > 4'd12) led_index <= 0;
       else led_index <= led_index + 1'b1;
     end
 
@@ -66,11 +67,32 @@ module ledwalkersm (
     endcase
 
     `ifdef SIM_ON
+	    // Design always stays within bounds
 	    always @(posedge i_clk)
-		    assert (led_index <= 4'd10);
+		    assert (led_index <= 4'd13);
 
+	    // integer clock divider stays within bounds
 	    always @(posedge i_clk)
 		    assert (counter <= CLK_RATE_HZ-1); 
+
+	    reg f_valid_output;
+	    // FSM only arrives to valid states
+	    always@(*)
+	    begin
+		    f_valid_output = 0;
+		    case(o_led)
+                    8'h01: f_valid_output = 1'b1;
+		    8'h02: f_valid_output = 1'b1;
+                    8'h04: f_valid_output = 1'b1;
+                    8'h08: f_valid_output = 1'b1;
+                    8'h10: f_valid_output = 1'b1;
+                    8'h20: f_valid_output = 1'b1;
+                    8'h40: f_valid_output = 1'b1;
+                    8'h80: f_valid_output = 1'b1;
+		    default: f_valid_output = 1'b0;
+		    endcase
+		    assert(f_valid_output);
+            end 
 
     `endif
 endmodule
