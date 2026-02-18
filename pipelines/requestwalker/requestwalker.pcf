@@ -1,0 +1,11 @@
+set_io o_led[0] 39 
+set_io o_led[1] 12 
+set_io o_led[2] 21 
+set_io o_led[3] 13 
+set_io o_led[4] 40 
+set_io o_led[5] 19 
+
+set_io o_busy 18
+
+set_io i_request 11
+set_io i_clk 20
