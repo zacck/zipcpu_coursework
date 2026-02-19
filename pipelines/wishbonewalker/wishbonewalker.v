@@ -7,26 +7,37 @@ module wishbonewalker (
     i_data,
     o_stall,
     o_ack,
-    o_data
+    o_data, 
+    o_led
 );
   input wire i_clk;
-  input wire i_cyc;
-  input wire i_stb;
-  input wire i_we;
+  
+  //Wishbone 
+  input wire i_cyc, i_stb, i_we;
   input wire i_addr;
   input wire [5:0] i_data;
+
   output wire o_stall;
   output reg o_ack;
   output wire [5:0] o_data;
-
+  
+  output reg [5:0] o_led;
+  
   reg [3:0] state;
-  reg [5:0] o_led;
   wire busy;
 
   // set defaults
-  initial o_led = 6'h00;
   initial state = 0;
   initial o_ack = 1'b0;
+
+  /* Implement a state machine for the led walking
+   * Go back and forth like the wavedrom signals
+   */
+  always @(posedge i_clk)
+    if ((i_stb) && (i_we) && (!o_stall)) state <= 4'h1;
+    else if (state >= 4'd11) state <= 4'h0;
+    else if (state != 0) state <= state + 1'b1;
+
 
   // Ack all transcations
   always @(posedge i_clk) o_ack <= (i_stb) && (!o_stall);
@@ -36,15 +47,7 @@ module wishbonewalker (
 
   assign o_data  = o_led;
 
-  /* Implement a state machine for the led walking
-   * Go back and forth like the wavedrom signals
-   */
-  always @(posedge i_clk)
-    if ((i_stb) && (!o_stall)) state <= 4'h1;
-    else if (state >= 4'hB) state <= 4'h0;
-    else if (state != 0) state <= state + 1'b1;
-
-
+  
   // Continously assign a busy signal depending on our state
   assign busy = (state != 0);
 

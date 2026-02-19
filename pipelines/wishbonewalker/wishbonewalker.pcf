@@ -4,7 +4,15 @@ set_io o_data[2] 21
 set_io o_data[3] 13 
 set_io o_data[4] 40 
 set_io o_data[5] 19 
+
+set_io o_led[0] 2 
+set_io o_led[1] 46 
+set_io o_led[2] 47 
+set_io o_led[3] 45 
+set_io o_led[4] 48 
+set_io o_led[5] 3 
  
+
 set_io i_data[0] 34 
 set_io i_data[1] 43 
 set_io i_data[2] 36 
