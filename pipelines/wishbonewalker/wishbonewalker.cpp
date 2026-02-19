@@ -29,6 +29,7 @@ void tick() {
 unsigned wb_read(unsigned a) {
 	tb->i_cyc = tb->i_stb = 1; 
 	tb->i_we = 0; 
+	tb->eval();
 	tb->i_addr = a; 
 
 	while(tb->o_stall)
