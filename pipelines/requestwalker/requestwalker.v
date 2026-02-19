@@ -15,7 +15,7 @@ module requestwalker (
 
   // set defaults
   initial stb = 0;
-  initial o_led = 6'h01;
+  initial o_led = 6'h00;
   initial state = 0;
 
 
@@ -47,6 +47,7 @@ module requestwalker (
 
     end
 
+  // Continously assign a busy signal depending on our state
   assign o_busy = (state != 0);
 
 

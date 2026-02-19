@@ -16,7 +16,7 @@ module wishbonewalker (
   input wire i_addr;
   input wire [5:0] i_data;
   output wire o_stall;
-  output wire o_ack;
+  output reg o_ack;
   output wire [5:0] o_data;
 
   reg [3:0] state;
@@ -26,8 +26,6 @@ module wishbonewalker (
   // set defaults
   initial o_led = 6'h00;
   initial state = 0;
-  initial busy = 0;
-
   initial o_ack = 1'b0;
 
   // Ack all transcations

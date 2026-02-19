@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Vrequestwalker.h"
+#include "Vwishbonewalker.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
 //clock toggler for our simulation
-void tick(int tickcount, Vrequestwalker *tb, VerilatedVcdC *tfp) {
+void tick(int tickcount, Vwishbonewalker *tb, VerilatedVcdC *tfp) {
 	tb->eval(); 
 	if(tfp)//dump 2ns before the tick
 	       tfp->dump(tickcount * 10 - 2);
@@ -25,26 +25,28 @@ void tick(int tickcount, Vrequestwalker *tb, VerilatedVcdC *tfp) {
 
 int main(int argc, char **argv) {
 	Verilated::commandArgs(argc, argv); 
-	Vrequestwalker *tb = new Vrequestwalker;
+	Vwishbonewalker *tb = new Vwishbonewalker;
 
 	// trace generation
 	unsigned tickcount = 0;
 	Verilated::traceEverOn(true);
 	VerilatedVcdC *tfp = new VerilatedVcdC;
 	tb->trace(tfp, 99);
-	tfp->open("requestwalkertrace.vcd");
+	tfp->open("wishbonewalkertrace.vcd");
 
-	int last_led = tb->o_led;
-	tb->i_request = 1;
+	int last_led = tb->o_data;
+	tb->i_we = 1;
+	tb->i_stb = 1;
+	tb->i_cyc = 1;
 	for(int k=0; k <(1<<10); k++) {
 		tick(++tickcount, tb, tfp);
-		if (last_led != tb->o_led) {
+		if (last_led != tb->o_data) {
 			printf("k = %7d ", k);
-			printf("i_req = %d ", tb->i_request);
-			printf("o_busy  = %d ", tb->o_busy);
-			printf("led = %d\n", tb->o_led);
+			printf("i_we = %d ", tb->i_we);
+			printf("o_stall  = %d ", tb->o_stall);
+			printf("data = %d\n", tb->o_data);
 		} 
-		last_led = tb->o_led;
+		last_led = tb->o_data;
 	}
 }
 
