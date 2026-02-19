@@ -1,0 +1,23 @@
+set_io o_data[0] 39 
+set_io o_data[1] 12 
+set_io o_data[2] 21 
+set_io o_data[3] 13 
+set_io o_data[4] 40 
+set_io o_data[5] 19 
+ 
+set_io i_data[0] 34 
+set_io i_data[1] 43 
+set_io i_data[2] 36 
+set_io i_data[3] 42 
+set_io i_data[4] 38 
+set_io i_data[5] 28 
+ 
+
+set_io o_stall 18
+set_io o_ack 32
+set_io i_stb 27
+set_io i_cyc 37
+set_io i_addr 31
+set_io i_we 35
+
+set_io i_clk 20

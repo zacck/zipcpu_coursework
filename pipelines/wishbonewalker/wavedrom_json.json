@@ -1,0 +1,10 @@
+{signal: [
+  {name: 'clk', wave: 'p............'},
+  {name: 'i_request', wave: '010..........'},
+  {name: 'o_busy', wave: '0.1........0.'},
+  {name: 'oled[1]', wave: '0.10......10.'},
+  {name: 'oled[2]', wave: '0..10....10..'},
+  {name: 'oled[3]', wave: '0...10..10...'},
+  {name: 'oled[4]', wave: '0....1010....'},
+  {name: 'oled[5]', wave: '0.....10.....'}
+]}
