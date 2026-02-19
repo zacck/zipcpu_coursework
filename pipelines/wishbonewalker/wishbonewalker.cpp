@@ -4,8 +4,12 @@
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
+int     tickcount = 0;
+Vwishbonewalker  *tb;
+VerilatedVcdC   *tfp; 
+
 //clock toggler for our simulation
-void tick(int tickcount, Vwishbonewalker *tb, VerilatedVcdC *tfp) {
+void tick() {
 	tb->eval(); 
 	if(tfp)//dump 2ns before the tick
 	       tfp->dump(tickcount * 10 - 2);
@@ -21,32 +25,66 @@ void tick(int tickcount, Vwishbonewalker *tb, VerilatedVcdC *tfp) {
 	}
 }
 
+unsigned wb_read(unsigned a) {
+	tb->i_cyc = tb->i_stb = 1; 
+	tb->i_we = 0; 
+	tb->i_addr = a; 
+
+	while(tb->o_stall)
+		tick();
+	tick(); 
+	tb->i_stb = 0; 
+
+	while(!tb->o_ack)
+		tick();
+
+	tb->i_cyc = 0; 
+
+	return tb->o_data; 
+}
+
+void wb_write(unsigned a, unsigned v) {
+	tb->i_cyc  = tb->i_stb = 1; 
+	tb->i_we  = 1; 
+	tb->i_addr = a; 
+	tb->i_data = v; 
+
+	while(tb->o_stall)
+		tick(); 
+	tick(); 
+	tb->i_stb = 0; 
+	
+	while(!tb->o_ack)
+		tick();
+	tb->i_cyc = 0; 
+}
+
 
 
 int main(int argc, char **argv) {
+	int last_led, last_state = 0, state  = 0; 
 	Verilated::commandArgs(argc, argv); 
-	Vwishbonewalker *tb = new Vwishbonewalker;
+	tb = new Vwishbonewalker;
 
 	// trace generation
-	unsigned tickcount = 0;
 	Verilated::traceEverOn(true);
-	VerilatedVcdC *tfp = new VerilatedVcdC;
+	tfp = new VerilatedVcdC;
 	tb->trace(tfp, 99);
 	tfp->open("wishbonewalkertrace.vcd");
 
-	int last_led = tb->o_data;
-	tb->i_we = 1;
-	tb->i_stb = 1;
-	tb->i_cyc = 1;
-	for(int k=0; k <(1<<10); k++) {
-		tick(++tickcount, tb, tfp);
-		if (last_led != tb->o_data) {
-			printf("k = %7d ", k);
-			printf("i_we = %d ", tb->i_we);
-			printf("o_stall  = %d ", tb->o_stall);
-			printf("data = %d\n", tb->o_data);
-		} 
-		last_led = tb->o_data;
+	printf("Initial state is: 0x%02x\n", wb_read(0));
+
+	for(int cycle=0; cycle <2; cycle++) {
+		for (int i=0; i < 5;  i++)
+			tick();
+		//start cycling LEDS
+		wb_write(0, 0);
+		tick();
+
+		while((state = wb_read(0)) != 0) {
+			if((state != last_state) ||  
+					
+
 	}
 }
 
