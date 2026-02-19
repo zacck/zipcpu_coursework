@@ -10,6 +10,7 @@ VerilatedVcdC   *tfp;
 
 //clock toggler for our simulation
 void tick() {
+	tickcount++;
 	tb->eval(); 
 	if(tfp)//dump 2ns before the tick
 	       tfp->dump(tickcount * 10 - 2);
@@ -56,7 +57,7 @@ void wb_write(unsigned a, unsigned v) {
 	
 	while(!tb->o_ack)
 		tick();
-	tb->i_cyc = 0; 
+	tb->i_cyc = tb->i_stb = 0; 
 }
 
 
@@ -71,6 +72,7 @@ int main(int argc, char **argv) {
 	tfp = new VerilatedVcdC;
 	tb->trace(tfp, 99);
 	tfp->open("wishbonewalkertrace.vcd");
+	last_led = tb->o_led;
 
 	printf("Initial state is: 0x%02x\n", wb_read(0));
 
@@ -82,10 +84,28 @@ int main(int argc, char **argv) {
 		tick();
 
 		while((state = wb_read(0)) != 0) {
-			if((state != last_state) ||  
-					
+			if((state != last_state) ||
+					(tb->o_led != last_led)) {
+				printf("state changed \n");
 
+				for(int j = 0; j < 6; j++) {
+					if(tb->o_led & (1<<j))
+						printf("O");
+					else 
+						printf("-");
+				}
+				printf("\n");
+			}
+			tick(); 
+
+			last_state = state; 
+			last_led = tb->o_led;
+		} 
 	}
+
+	tfp->close();
+	delete tfp;
+	delete tb;
 }
 
 
