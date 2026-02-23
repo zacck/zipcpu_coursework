@@ -12,7 +12,7 @@ add_library(Vtest_lib SHARED
 	/usr/local/share/verilator/include/verilated_vcd_c.cpp
 )
 
-verilate(Vtest_lib SOURCES ./wishbonewalker.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3")
+verilate(Vtest_lib SOURCES ./wishbonewalker.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3" "-GSIM_EN=1")
 
 add_executable(${CMAKE_PROJECT_NAME}
 	wishbonewalker.cpp
