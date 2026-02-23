@@ -1,0 +1,19 @@
+[tasks]
+prf
+cvr 
+
+
+[options]
+cvr: mode cover
+prf: mode prove 
+
+
+[engines]
+smtbmc 
+
+[script]
+read -formal wishbonewalker.v
+prep -top wishbonewalker
+
+[files]
+wishbonewalker.v
