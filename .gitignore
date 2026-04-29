@@ -2,3 +2,6 @@ _build
 build
 obj_dir
 *.vcd
+*_prf 
+*_cvr
+*.sqlite
