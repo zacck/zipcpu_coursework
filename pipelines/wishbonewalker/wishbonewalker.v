@@ -64,29 +64,35 @@ module wishbonewalker (
   assign busy = (state != 0);
 
 
-  always @(posedge i_clk)
+  always @(*)
     case (state)
-      4'h1: o_led <= 6'h01;
-      4'h2: o_led <= 6'h02;
-      4'h3: o_led <= 6'h04;
-      4'h4: o_led <= 6'h08;
-      4'h5: o_led <= 6'h10;
-      4'h6: o_led <= 6'h20;
-      4'h7: o_led <= 6'h10;
-      4'h8: o_led <= 6'h08;
-      4'h9: o_led <= 6'h04;
-      4'ha: o_led <= 6'h02;
-      4'hb: o_led <= 6'h01;
-      default: o_led <= 6'h00;
+      4'h1: o_led = 6'h01;
+      4'h2: o_led = 6'h02;
+      4'h3: o_led = 6'h04;
+      4'h4: o_led = 6'h08;
+      4'h5: o_led = 6'h10;
+      4'h6: o_led = 6'h20;
+      4'h7: o_led = 6'h10;
+      4'h8: o_led = 6'h08;
+      4'h9: o_led = 6'h04;
+      4'ha: o_led = 6'h02;
+      4'hb: o_led = 6'h01;
+      default: o_led = 6'h00;
     endcase
 
 `ifdef SIM_ON
   reg f_past_valid;
   initial f_past_valid = 0;
-  always @(posedge i_clk) f_past_valid = 1'b1;
+  always @(posedge i_clk) f_past_valid <= 1'b1;
 
+  // Bus should start at idle
+  //initial assume (!i_cyc);
+
+
+  
   /*Validate state machine*/
-  always_comb
+  always @(*)
+  begin
     case (state)
       4'h1: assert (o_led == 6'h01);
       4'h2: assert (o_led == 6'h02);
@@ -101,14 +107,15 @@ module wishbonewalker (
       4'hb: assert (o_led == 6'h01);
       default: assert (o_led == 6'h00);
     endcase
+ end
+ 
 
-  always_comb assert (busy != (state == 0));
+  always @(*) assert (busy != (state == 0));
 
-  always_comb assert (state <= 4'hb);
+  always @(*) assert (state <= 4'hb);
 
-  /* Stall when we get i_we and valid i_stb
-   * State should be 1
-   */
+  // Stall when we get i_we and valid i_stb
+  // State should be 1
   always @(posedge i_clk)
     if ((f_past_valid) && ($past(i_stb)) && ($past(i_we)) && (!$past(o_stall))) begin
       assert (state == 1);
@@ -116,16 +123,13 @@ module wishbonewalker (
     end
 
 
-  /* Check that state increments within bounds*/
+  // Check that state increments within bounds
   always @(posedge i_clk)
     if ((f_past_valid) && ($past(busy)) && ($past(state < 4'hb)))
       assert (state == $past(state) + 1);
 
-  // Bus should start at idle
-  initial assume (i_cyc);
-
-  // i_stb only if i_cyc
-  always_comb if (!i_cyc) assume (!i_stb);
+    // i_stb only if i_cyc
+  always @(*) if (!i_cyc) assume (!i_stb);
 
   // i_cyc goes high i_stb should too
   always @(posedge i_clk) if ((!$past(i_cyc)) && (i_cyc)) assume (i_stb);
@@ -139,7 +143,7 @@ module wishbonewalker (
       if (i_we) assume (i_data == $past(i_data));
     end
 
-  /* We ack every request*/
+  // We ack every request
   always @(posedge i_clk) if ((f_past_valid) && ($past(i_stb)) && (!$past(o_stall))) assert (o_ack);
 
   always @(posedge i_clk) if (f_past_valid) cover ((!busy) && ($past(busy)));
