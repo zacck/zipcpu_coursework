@@ -14,6 +14,7 @@ smtbmc
 [script]
 read -formal wishbonewalker.v
 prep -top wishbonewalker
+memory_map -rom-only
 
 [files]
 wishbonewalker.v
