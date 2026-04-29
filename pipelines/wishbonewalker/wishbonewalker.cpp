@@ -58,7 +58,7 @@ void wb_write(unsigned a, unsigned v) {
 	
 	while(!tb->o_ack)
 		tick();
-	tb->i_cyc = tb->i_stb = 0; 
+	tb->i_cyc = 0; 
 }
 
 
@@ -75,16 +75,16 @@ int main(int argc, char **argv) {
 	tfp->open("wishbonewalkertrace.vcd");
 	last_led = tb->o_led;
 
-	printf("Initial state is: 0x%02x\n", wb_read(0));
+	printf("Initial state is: 0x%02x\n", wb_read(2));
 
-	for(int cycle=0; cycle <2; cycle++) {
+	for(int cycle=0; cycle <5; cycle++) {
 		for (int i=0; i < 5;  i++)
 			tick();
 		//start cycling LEDS
-		wb_write(0, 0);
+		wb_write(2, 3);
 		tick();
 
-		while((state = wb_read(0)) != 0) {
+		while((state = wb_read(2)) != 0) {
 			if((state != last_state) ||
 					(tb->o_led != last_led)) {
 				printf("state changed \n");

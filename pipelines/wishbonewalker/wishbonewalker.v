@@ -12,7 +12,13 @@ module wishbonewalker (
 );
   input wire i_clk;
 
-  //Wishbone
+  // Verilator lint_off UNUSED
+  wire unused;
+
+  assign unused = &{1'b0, i_cyc, i_addr, i_data};
+  //Verilator lint_on UNUSED
+  
+  //Wishbone 
   input wire i_cyc, i_stb, i_we;
   input wire i_addr;
   input wire [5:0] i_data;
