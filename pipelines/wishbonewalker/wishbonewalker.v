@@ -17,8 +17,8 @@ module wishbonewalker (
 
   assign unused = &{1'b0, i_cyc, i_addr, i_data};
   //Verilator lint_on UNUSED
-  
-  //Wishbone 
+
+  //Wishbone
   input wire i_cyc, i_stb, i_we;
   input wire i_addr;
   input wire [5:0] i_data;
@@ -89,10 +89,9 @@ module wishbonewalker (
   //initial assume (!i_cyc);
 
 
-  
+
   /*Validate state machine*/
-  always @(*)
-  begin
+  always @(*) begin
     case (state)
       4'h1: assert (o_led == 6'h01);
       4'h2: assert (o_led == 6'h02);
@@ -107,8 +106,8 @@ module wishbonewalker (
       4'hb: assert (o_led == 6'h01);
       default: assert (o_led == 6'h00);
     endcase
- end
- 
+  end
+
 
   always @(*) assert (busy != (state == 0));
 
@@ -128,7 +127,7 @@ module wishbonewalker (
     if ((f_past_valid) && ($past(busy)) && ($past(state < 4'hb)))
       assert (state == $past(state) + 1);
 
-    // i_stb only if i_cyc
+  // i_stb only if i_cyc
   always @(*) if (!i_cyc) assume (!i_stb);
 
   // i_cyc goes high i_stb should too

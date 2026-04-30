@@ -41,7 +41,7 @@ module requestwalker (
    */
   always @(posedge i_clk)
     if (stb) begin
-      if ((i_request) && (!o_busy)) state <= 4'h1;
+      if ((!o_busy)) state <= 4'h1;
       else if (state >= 4'hB) state <= 4'h0;
       else if (state != 0) state <= state + 1'b1;
 
@@ -53,17 +53,17 @@ module requestwalker (
 
   always @(posedge i_clk)
     case (state)
-      4'h1: o_led <= 6'h01;
-      4'h2: o_led <= 6'h02;
-      4'h3: o_led <= 6'h04;
-      4'h4: o_led <= 6'h08;
-      4'h5: o_led <= 6'h10;
-      4'h6: o_led <= 6'h20;
-      4'h7: o_led <= 6'h10;
-      4'h8: o_led <= 6'h08;
-      4'h9: o_led <= 6'h04;
-      4'ha: o_led <= 6'h02;
-      4'hb: o_led <= 6'h01;
-      default: o_led <= 6'h00;
+      4'h1: o_led <= ~6'h01;
+      4'h2: o_led <= ~6'h02;
+      4'h3: o_led <= ~6'h04;
+      4'h4: o_led <= ~6'h08;
+      4'h5: o_led <= ~6'h10;
+      4'h6: o_led <= ~6'h20;
+      4'h7: o_led <= ~6'h10;
+      4'h8: o_led <= ~6'h08;
+      4'h9: o_led <= ~6'h04;
+      4'ha: o_led <= ~6'h02;
+      4'hb: o_led <= ~6'h01;
+      default: o_led <= ~6'h00;
     endcase
 endmodule
