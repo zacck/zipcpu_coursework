@@ -41,7 +41,7 @@ module requestwalker (
    */
   always @(posedge i_clk)
     if (stb) begin
-      if ((!o_busy)) state <= 4'h1;
+      if ((i_request) && (!o_busy)) state <= 4'h1;
       else if (state >= 4'hB) state <= 4'h0;
       else if (state != 0) state <= state + 1'b1;
 
