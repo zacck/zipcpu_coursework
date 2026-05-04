@@ -29,11 +29,10 @@ module wishbonewalker (
 
   output reg [5:0] o_led;
 
-  parameter integer SIM_EN = 0;
-
-  if (SIM_EN == 1) begin : gen_sim_1
-    `define SIM_ON
-  end
+`ifndef SIM
+`else
+  `define SIM_ON
+`endif
 
   reg [3:0] state;
   wire busy;
