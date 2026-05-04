@@ -1,57 +1,75 @@
-module hello(
-	i_clk
+`include "uartport.v"
+
+`default_nettype none
+module hello (
+    i_clk,
+    uart_tx
 );
 
-txuart #(CLOCKS_PER_BAUD) mytxuart(.i_clk(i_clk),
-	.i_wr(tx_st), 
-	.i_data(tx_data), 
-	.o_busy(tx_busy), 
-	.o_uart_tx(o_uart));
+  parameter CLOCK_HZ_RATE = 12_000_000;  // 12MHZ clock 
+  parameter BAUD_RATE = 115_200;
+  input i_clk;
+  output uart_tx;
 
-reg [3:0] tx_index;
-reg [7:0] tx_data;
-reg [27:0] hz_counter; 
+  parameter INITIAL_UART_SETUP = (CLOCK_HZ_RATE / BAUD_RATE);
 
-initial hz_counter = 28'h16;
+  // Once a second restart
+  reg tx_restart;
+  reg [27:0] hz_counter;
 
-always @(posedge i_clk)
-	if(hz_counter == 0)
-		hz_counter <= CLOCK_RATE_HZ - 1'b1;
-	else 
-		hz_counter < hz_counter - 1'b1;
 
-//restart every second 
-initial tx_restart = 0;
+  initial hz_counter = 28'h16;
+  always @(posedge i_clk)
+    if (hz_counter == 0) hz_counter <= CLOCK_HZ_RATE - 1'b1;
+    else hz_counter <= hz_counter - 1'b1;
 
-always @(posedge i_clk)
-	tx_restart <= (hz_counter == 1);
-always @(posegde i_clk)
-	case(tx_index)
-		4'h0: tx_data <= "H";
-		4'h1: tx_data <= "e"; 
-		4'h2: tx_data <= "l"; 
-		4'h3: tx_data <= "l";
-		4'h4: tx_data <= "o";
-		4'h5: tx_data <= ",";
-		4'h6: tx_data <= " ";
-		4'h7: tx_data <= "W";
-		4'h8: tx_data <= "o"; 
-		4'h9: tx_data <= "r"; 
-		4'ha: tx_data <= "l";
-		4'hb: tx_data <= "d";
-		4'hc: tx_data <= "!"; 
-		4'hd: tx_data <= " ";
-		4'he: tx_data <= "\r";
-		4'hf: tx_data <= "\n";
-	endcase
+  initial tx_restart = 0;
+  always @(posedge i_clk) tx_restart <= (hz_counter == 1);
 
-always @(posedge i_clk)
-	if((tx_stb) && (!tx_busy))
-		tx_index <= tx_index + 1'b1; 
 
-always @(posedge i_clk)
-	if(tx_restart)
-		tx_stb <= 1'b1; 
-	else if((tx_stb) && (!tx_busy) && tx_index == 4'hf))
-		tx_stb <= 1'b0;
+  // Do tx
+  wire tx_busy;
+  reg tx_stb;
+  reg [3:0] tx_index;
+  reg [7:0] tx_data;
+
+  initial tx_index = 4'h0;
+  always @(posedge i_clk) if ((tx_stb) && (!tx_busy)) tx_index <= tx_index + 1'b1;
+
+
+  always @(posedge i_clk)
+    case (tx_index)
+      4'h0: tx_data <= "H";
+      4'h1: tx_data <= "e";
+      4'h2: tx_data <= "l";
+      4'h3: tx_data <= "l";
+      4'h4: tx_data <= "o";
+      4'h5: tx_data <= ",";
+      4'h6: tx_data <= " ";
+      4'h7: tx_data <= "W";
+      4'h8: tx_data <= "o";
+      4'h9: tx_data <= "r";
+      4'ha: tx_data <= "l";
+      4'hb: tx_data <= "d";
+      4'hc: tx_data <= "!";
+      4'hd: tx_data <= " ";
+      4'he: tx_data <= "\n";
+      4'hf: tx_data <= "\r";
+      default: tx_data <= ".";
+    endcase
+
+  //send char request
+  initial tx_stb = 1'b0;
+
+  always @(posedge i_clk)
+    if (&tx_restart) tx_stb <= 1'b1;
+    else if ((tx_stb) && (!tx_busy) && (tx_index == 4'hf)) tx_stb <= 1'b0;
+
+  uartport #(INITIAL_UART_SETUP[23:0]) uartport (
+      .i_clk(i_clk),
+      .i_wr(tx_stb),
+      .i_data(tx_data),
+      .o_uart_tx(uart_tx),
+      .o_busy(tx_busy)
+  );
 endmodule
