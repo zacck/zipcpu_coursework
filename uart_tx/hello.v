@@ -2,6 +2,9 @@
 
 `default_nettype none
 module hello (
+`ifdef SIM
+    o_setup,
+`endif
     i_clk,
     uart_tx
 );
@@ -13,6 +16,10 @@ module hello (
 
   parameter INITIAL_UART_SETUP = (CLOCK_HZ_RATE / BAUD_RATE);
 
+`ifdef SIM
+  output wire [31:0] o_setup;
+  assign o_setup = INITIAL_UART_SETUP;
+`endif
   // Once a second restart
   reg tx_restart;
   reg [27:0] hz_counter;
