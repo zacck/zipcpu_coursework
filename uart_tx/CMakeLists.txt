@@ -14,8 +14,10 @@ add_library(Vtest_lib SHARED
 
 verilate(Vtest_lib SOURCES ./hello.v INCLUDE_DIRS "../" TRACE_VCD  VERILATOR_ARGS "-O3" "-DSIM" "-Wall")
 
+
 add_executable(${CMAKE_PROJECT_NAME}
-	uart_tx.cpp
+	hello.cpp
+	uartsim.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} Vtest_lib)
