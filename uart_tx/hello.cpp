@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
 
 	tb->opentrace("hello.vcd"); 
 
-	for (int clocks = 0; clocks < 16 * 32 * baudclocks; clocks++) {
+	for (unsigned clocks = 0; clocks < 16 * 12 * baudclocks; clocks++) {
 		tb-> tick();
 		(*uart)(tb->m_core->uart_tx); 
 	}

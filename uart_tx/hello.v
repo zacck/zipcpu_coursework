@@ -12,7 +12,7 @@ module hello (
   parameter CLOCK_HZ_RATE = 12_000_000;  // 12MHZ clock 
   parameter BAUD_RATE = 115_200;
   input i_clk;
-  output uart_tx;
+  output wire uart_tx;
 
   parameter INITIAL_UART_SETUP = (CLOCK_HZ_RATE / BAUD_RATE);
 
@@ -53,11 +53,11 @@ module hello (
       4'h4: tx_data <= "o";
       4'h5: tx_data <= ",";
       4'h6: tx_data <= " ";
-      4'h7: tx_data <= "W";
-      4'h8: tx_data <= "o";
+      4'h7: tx_data <= "C";
+      4'h8: tx_data <= "a";
       4'h9: tx_data <= "r";
       4'ha: tx_data <= "l";
-      4'hb: tx_data <= "d";
+      4'hb: tx_data <= "a";
       4'hc: tx_data <= "!";
       4'hd: tx_data <= " ";
       4'he: tx_data <= "\n";
@@ -72,7 +72,9 @@ module hello (
     if (&tx_restart) tx_stb <= 1'b1;
     else if ((tx_stb) && (!tx_busy) && (tx_index == 4'hf)) tx_stb <= 1'b0;
 
-  uartport #(INITIAL_UART_SETUP[23:0]) uartport (
+  uartport #(
+      .CLOCKS_PER_BAUD(INITIAL_UART_SETUP[23:0])
+  ) myuartport (
       .i_clk(i_clk),
       .i_wr(tx_stb),
       .i_data(tx_data),

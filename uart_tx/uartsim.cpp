@@ -21,7 +21,7 @@ UARTSIM::UARTSIM(void) {
 
 
 void UARTSIM::setup(unsigned isetup) {
-	m_baud_counts = (isetup & 0x0ffffff); 
+	m_baud_counts = (isetup & 0x0ffffff);
 }
 
 int UARTSIM::operator()(const int i_tx) {
@@ -59,7 +59,7 @@ int UARTSIM::operator()(const int i_tx) {
 		pb.fd = STDIN_FILENO; 
 		pb.events = POLLIN; 
 
-		if(poll(&pb, 1, 0)) 
+		if(poll(&pb, 1, 0) < 0 ) 
 			perror("Polling error: "); 
 		
 		if(pb.revents & POLLIN) {
@@ -70,7 +70,7 @@ int UARTSIM::operator()(const int i_tx) {
 				m_tx_data = (-1 <<10)
 						|((buf[0] << 1)&0x01fe);
 
-				m_tx_busy = (1<<(10)-1); 
+				m_tx_busy = (1<<(10))-1; 
 				m_tx_state = TXDATA; 
 				o_rx = 0;
 				m_tx_baudcounter = m_baud_counts - 1; 
@@ -86,7 +86,7 @@ int UARTSIM::operator()(const int i_tx) {
 			m_tx_state = TXIDLE; 
 		else 
 			m_tx_baudcounter = m_baud_counts - 1; 
-		o_rx = m_tx_data & 1; 
+			o_rx = m_tx_data & 1; 
 	} else {
 		m_tx_baudcounter--; 
 		o_rx = m_tx_data & 1; 
