@@ -1,0 +1,15 @@
+[options]
+mode prove 
+depth 90
+expect pass 
+
+[engines]
+smtbmc yices
+
+[script]
+read_verilog -formal hello.v
+prep -top hello
+
+[files]
+uartport.v
+hello.v
