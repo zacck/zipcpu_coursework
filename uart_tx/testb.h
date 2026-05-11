@@ -9,7 +9,7 @@
 template <class VA> class TESTB {
 	public: 
 		VA		*m_core;
-		VerilaredVcdC 	*m_trace;
+		VerilatedVcdC 	*m_trace;
 		uint64_t 	m_tickcount; 
 
 		// Constructor

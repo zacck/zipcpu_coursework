@@ -4,7 +4,7 @@
 
 int main(int argc, char **argv) {
 	Verilated::commandArgs(argc, argv); 
-	TESTB<Vhello> *tb = new TESTB<VHello>;
+	TESTB<Vhello> *tb = new TESTB<Vhello>;
 	UARTSIM *uart = new UARTSIM();
 
 	unsigned baudclocks; 
@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 
 	for (int clocks = 0; clocks < 16 * 32 * baudclocks; clocks++) {
 		tb-> tick();
-		(*uart)(tb->m_core->o_uart_tx); 
+		(*uart)(tb->m_core->uart_tx); 
 	}
 
 	printf("\n\nSimulation complete\n");

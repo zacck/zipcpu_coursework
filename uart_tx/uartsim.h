@@ -2,7 +2,7 @@
 #define UARTSIM_H 
 
 #include <stdio.h>
-#include <stblib.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
