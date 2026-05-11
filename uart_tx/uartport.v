@@ -25,8 +25,7 @@ module uartport (
           BIT_FIVE       = 4'h6,
           BIT_SIX        = 4'h7,
           BIT_SEVEN      = 4'h8,
-          LAST_BIT       = 4'h9,
-          IDLE_BIT       = 4'ha;
+          LAST_BIT = 4'h8, IDLE_BIT = 4'ha;
 
   reg [8:0] lcl_data;
   reg [23:0] counter;
@@ -43,7 +42,7 @@ module uartport (
   always @(posedge i_clk)
     if ((i_wr) && (!o_busy))
       // let's start writing a byte
-      {o_busy, state} = {
+      {o_busy, state} <= {
         1'b1, START_BIT
       };
     else if (baud_stb) begin
@@ -86,4 +85,58 @@ module uartport (
       baud_stb <= 1'b0;
     end
 
+
+`ifdef SIM
+
+`ifdef TXUART
+  `define ASSUME assume
+`else
+  `define ASSUME assert
+`endif
+
+  reg f_past_valid;
+
+  initial f_past_valid = 1'b0;
+  always @(posedge i_clk) f_past_valid <= 1'b1;
+
+  //if some request was busy should stay busy
+  initial `ASSUME(!i_wr);
+  always @(posedge i_clk)
+    if ((f_past_valid) && ($past(i_wr)) && ($past(o_busy))) begin
+      `ASSUME(i_wr == $past(i_wr));
+      `ASSUME(i_data == $past(i_data));
+    end
+
+
+  // Contract Check
+
+  reg [7:0] fv_data;
+  always @(posedge i_clk) if ((i_wr) && (!o_busy)) fv_data <= i_data;
+
+  always @(posedge i_clk)
+    case (state)
+      IDLE_BIT:  assert (o_uart_tx == 1'b1);
+      START_BIT: assert (o_uart_tx == 1'b0);
+      BIT_ZERO:  assert (o_uart_tx == fv_data[0]);
+      BIT_ONE:   assert (o_uart_tx == fv_data[1]);
+      BIT_TWO:   assert (o_uart_tx == fv_data[2]);
+      BIT_THREE: assert (o_uart_tx == fv_data[3]);
+      BIT_FOUR:  assert (o_uart_tx == fv_data[4]);
+      BIT_FIVE:  assert (o_uart_tx == fv_data[5]);
+      BIT_SIX:   assert (o_uart_tx == fv_data[6]);
+      BIT_SEVEN: assert (o_uart_tx == fv_data[7]);
+      default:   assert (0);
+    endcase
+
+  //Internal State check
+  always @(posedge i_clk) assert (baud_stb == (counter == 0));
+
+  always @(posedge i_clk)
+    if ((f_past_valid) && ($past(counter != 0)))
+      assert (counter == $past(counter - 1'b1));
+  always @(posedge i_clk) assert (counter < CLOCKS_PER_BAUD);
+
+  always @(posedge i_clk) if (!baud_stb) assert (o_busy);
+
+`endif
 endmodule
