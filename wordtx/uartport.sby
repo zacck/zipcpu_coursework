@@ -1,0 +1,13 @@
+[options]
+mode prove
+depth 5
+
+[engines]
+smtbmc yices
+
+[script]
+read_verilog -DTXUART -formal uartport.v
+prep -top uartport
+
+[files]
+uartport.v

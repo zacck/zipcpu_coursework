@@ -1,0 +1,3 @@
+set_io o_uart_tx 11
+set_io i_event 12
+set_io i_clk 20
