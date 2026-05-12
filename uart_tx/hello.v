@@ -11,7 +11,7 @@ module hello (
 
   parameter CLOCK_HZ_RATE = 12_000_000;  // 12MHZ clock 
   parameter BAUD_RATE = 115_200;
-  input i_clk;
+  input  wire i_clk;
   output wire uart_tx;
 
   parameter INITIAL_UART_SETUP = (CLOCK_HZ_RATE / BAUD_RATE);

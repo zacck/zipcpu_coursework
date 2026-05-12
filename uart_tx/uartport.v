@@ -33,7 +33,7 @@ module uartport (
   reg [3:0] state;
 
   // Clock divider so we can set a baudrate
-  parameter [23:0] CLOCKS_PER_BAUD = 24'd868;
+  parameter [23:0] CLOCKS_PER_BAUD = 24'd8680;
 
   initial {o_busy, state} = {1'b0, IDLE_BIT};
 
@@ -104,7 +104,7 @@ module uartport (
   always @(posedge i_clk)
     if ((f_past_valid) && ($past(i_wr)) && ($past(o_busy))) begin
       `ASSUME(i_wr == $past(i_wr));
-      `ASSUME(i_data == $past(i_data));
+      //`ASSUME(i_data == $past(i_data));
     end
 
 
