@@ -5,7 +5,7 @@ module chgdetector(
 	o_stb,
 	o_data,
 	// backwards status in
-	i_busy,); 
+	i_busy); 
 
  input wire i_clk; 
  input wire [31:0] i_data; 

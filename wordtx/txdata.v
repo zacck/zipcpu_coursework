@@ -1,3 +1,5 @@
+`include "uartport.v"
+
 `default_nettype none
 module txdata(
 	i_clk,
@@ -9,7 +11,7 @@ module txdata(
 
 	parameter UART_SETUP = 868;
 	input wire i_clk, i_stb, i_reset;
-	input wire [32:0] i_data;
+	input wire [31:0] i_data;
 	output wire o_uart_tx;
 	output wire o_busy;
 
@@ -18,6 +20,8 @@ module txdata(
 	wire tx_busy;
 	initial tx_stb = 1'b0;
 	initial state = 4'h0;
+
+	assign o_busy = (state != 4'h0);
 
 	always @(posedge i_clk)
 		if(i_reset)
@@ -41,7 +45,7 @@ module txdata(
 			end  
 		end
 
-	reg [32:0] my_data_copy;
+	reg [31:0] my_data_copy;
 	initial my_data_copy = 0;
 
 	always @(posedge i_clk)
@@ -92,6 +96,53 @@ module txdata(
 			endcase
 
 
+`ifndef SIM
 	uartport #(UART_SETUP[23:0]) 
 		txdatauart(i_clk, tx_stb, tx_data, o_uart_tx, tx_busy);
+`else 
+	
+	(* anyseq *) wire serial_busy, serial_out; 
+	assign o_uart_tx = serial_out; 
+	assign tx_busy = serial_busy;
+`endif 
+
+`ifdef SIM 
+	reg f_past_valid; 
+	initial f_past_valid = 0; 
+	always @(posedge i_clk)
+		f_past_valid <= 1;
+	reg [1:0] f_minbusy; 	
+	initial f_minbusy = 0; 
+	// Force F min buy to take at least 4 clocks 00, 01, 10, 11
+	always @(posedge i_clk)
+		if((tx_stb) && (!tx_busy))
+			f_minbusy <= 2'b01; 
+		else if (f_minbusy != 2'b00)
+			f_minbusy <= f_minbusy + 1'b1;
+
+	//uart must be busy after a request
+	always @(*)
+		if(f_minbusy != 0)
+			assume(tx_busy);
+
+	// uart should not become busy on its own 
+	initial assume(!tx_busy); 
+	always @(posedge i_clk)
+		if($past(i_reset))
+			assume(!tx_busy);
+		else if (($past(tx_stb))&&(!$past(tx_busy)))
+			//becomes busy with a request
+			assume(tx_busy);
+		else if (!$past(tx_busy))
+			//stay not busy
+			assume(!tx_busy);
+
+	always @(posedge i_clk)
+		if(f_past_valid)
+			cover($fell(o_busy));
+
+	always @(posedge i_clk)
+		if((past_valid)&&(!$past(i_reset))
+			cover($fell(o_busy));
+`endif
 endmodule

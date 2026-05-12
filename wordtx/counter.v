@@ -12,6 +12,6 @@ module counter(i_clk,
  always @(posedge i_clk)
 	 if(i_rst)
 		 o_counter <= 0;
-	 if(i_event)
+	 else if(i_event)
 		 o_counter <= o_counter + 1'b1;
 endmodule

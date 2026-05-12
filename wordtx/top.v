@@ -1,4 +1,3 @@
-`include "uartport.v"
 `include "chgdetector.v"
 `include "counter.v"
 `include "txdata.v"
