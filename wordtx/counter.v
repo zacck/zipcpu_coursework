@@ -8,11 +8,10 @@ module counter(i_clk,
  initial o_counter = 0;
 
  // On reset start afresh
- always @(posedge i_rst) 
-	 o_counter <= 0; 
-
  // if an event occurs count the event
  always @(posedge i_clk)
+	 if(i_rst)
+		 o_counter <= 0;
 	 if(i_event)
 		 o_counter <= o_counter + 1'b1;
 endmodule
